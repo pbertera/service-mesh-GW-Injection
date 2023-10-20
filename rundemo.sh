@@ -59,6 +59,8 @@ create_app 8081
 create_app 8082
 create_app 8083
 
+pe "oc get pods,svc -n netcat"
+
 pi "# We now need to expose the applications"
 pi "# Let's create the istio-system namespace and the Service Mesh Control Plane"; sleep 1
 pe "oc new-project istio-system"
@@ -66,7 +68,10 @@ scm_manifest=$(cat manifests/smcp.yaml)
 pi 'cat << EOF | oc create -n istio-system -f -'
 echo "$scm_manifest"
 echo EOF
+
 oc create -f manifests/smcp.yaml
+
+pi "# Check on the AWS console the new LB"
 
 pi "# Let's have a look at the 'istio-ingressgateway' service"
 pe "oc get svc -n istio-system istio-ingressgateway -o yaml"
