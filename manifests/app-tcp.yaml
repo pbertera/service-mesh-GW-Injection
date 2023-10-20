@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nc-${PORT}
+  labels:
+    app: nc-${PORT}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nc-${PORT}
+  template:
+    metadata:
+      labels:
+        app: nc-${PORT}
+    spec:
+      containers:
+      - name: nc
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - "ALL"
+          runAsNonRoot: true
+          seccompProfile:
+            type: "RuntimeDefault"
+        image: quay.io/pbertera/net-tools
+        args:
+        - nc
+        - -e
+        - /bin/cat
+        - -l
+        - -n
+        - -k
+        - -p ${PORT}
+        ports:
+        - containerPort: ${PORT}
+          protocol: TCP
+          name: nc-${PORT}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nc-${PORT}
+spec:
+  selector:
+    app: nc-${PORT}
+  ports:
+  - name: nc-${PORT}
+    protocol: TCP
+    port: ${PORT}
+    targetPort: nc-${PORT}

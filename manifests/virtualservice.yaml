@@ -1,0 +1,32 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: netcat
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - netcat-gateway
+  tcp: # routing rules per each port
+  - match:
+    - port: 8081
+    route:
+    - destination:
+        host: nc-8081.netcat.svc.cluster.local
+        port:
+          number: 8081
+  - match:
+    - port: 8082
+    route:
+    - destination:
+        host: nc-8082.netcat.svc.cluster.local
+        port:
+          number: 8082
+  - match:
+    - port: 8083
+    route:
+    - destination:
+        host: nc-8083.netcat.svc.cluster.local
+        port:
+          number: 8083
+
