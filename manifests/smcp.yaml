@@ -63,4 +63,6 @@ spec:
         metadata:
           annotations:
             service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+            # If you want to attach the LoadBalancer to an ElasticIP use the eip-allocation:
+            # service.beta.kubernetes.io/aws-load-balancer-eip-allocations: "eipalloc-04bdd794533091ce1"
 
