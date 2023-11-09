@@ -1,0 +1,68 @@
+apiVersion: maistra.io/v2
+kind: ServiceMeshControlPlane
+metadata:
+  name: basic
+  namespace: istio-system
+spec:
+  version: v2.4
+  security:
+    identity:
+      type: ThirdParty # Required for ROSA
+  tracing:
+    type: Jaeger
+    sampling: 10000
+  addons:
+    jaeger:
+      name: jaeger
+      install:
+        storage:
+          type: Memory
+    kiali:
+      enabled: true
+      name: kiali
+    grafana:
+      enabled: true
+  gateways:
+    ingress:
+      service:
+        ports:
+        # Heatlh check port
+        - name: status-port
+          port: 15021
+          protocol: TCP
+          targetPort: 15021
+        # HTTP port
+        - name: http
+          port: 80
+          protocol: TCP
+          targetPort: 8080
+        # HTTPS port
+        - name: https
+          port: 443
+          protocol: TCP
+          targetPort: 8443
+        # First application listening on port 8081
+        - name: nc-8081
+          port: 8081
+          protocol: TCP
+          targetPort: 8081
+        # Second application listening on port 8081
+        - name: nc-8082
+          port: 8082
+          protocol: TCP
+          targetPort: 8082
+        # Third application listening on port 8081
+        - name: nc-8083
+          port: 8083
+          protocol: TCP
+          targetPort: 8083
+        # We need the Ingress Gateway exposed with a LoadBalancer
+        type: LoadBalancer
+        externalTrafficPolicy: Local
+        # The Load Balancer must be a Network Load Balancer
+        metadata:
+          annotations:
+            service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+            # If you want to attach the LoadBalancer to an ElasticIP use the eip-allocation:
+            # service.beta.kubernetes.io/aws-load-balancer-eip-allocations: "eipalloc-04bdd794533091ce1"
+

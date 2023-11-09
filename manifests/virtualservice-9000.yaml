@@ -1,0 +1,31 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: echo-server-9000
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - gateway-9000
+  tcp: # routing rules per each port
+  - match:
+    - port: 9091
+    route:
+    - destination:
+        host: echo-9091.echo-server-9000.svc.cluster.local
+        port:
+          number: 9091
+  - match:
+    - port: 9092
+    route:
+    - destination:
+        host: echo-9092.echo-server-9000.svc.cluster.local
+        port:
+          number: 9092
+  - match:
+    - port: 9093
+    route:
+    - destination:
+        host: echo-9093.echo-server-9000.svc.cluster.local
+        port:
+          number: 9093

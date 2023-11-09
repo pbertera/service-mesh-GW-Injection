@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nc-${PORT}
+  name: echo-${PORT}
   labels:
-    app: nc-${PORT}
+    app: echo-${PORT}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nc-${PORT}
+      app: echo-${PORT}
   template:
     metadata:
       labels:
-        app: nc-${PORT}
+        app: echo-${PORT}
     spec:
       containers:
-      - name: nc
+      - name: echo
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -24,29 +24,24 @@ spec:
           runAsNonRoot: true
           seccompProfile:
             type: "RuntimeDefault"
-        image: quay.io/pbertera/net-tools
+        image: docker.io/istio/tcp-echo-server:1.2
         args:
-        - nc
-        - -e
-        - /bin/cat
-        - -l
-        - -n
-        - -k
-        - -p ${PORT}
+        - "$PORT"
+        - "Received on port $PORT:"
         ports:
         - containerPort: ${PORT}
           protocol: TCP
-          name: nc-${PORT}
+          name: echo-${PORT}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: nc-${PORT}
+  name: echo-${PORT}
 spec:
   selector:
-    app: nc-${PORT}
+    app: echo-${PORT}
   ports:
-  - name: nc-${PORT}
+  - name: echo-${PORT}
     protocol: TCP
     port: ${PORT}
-    targetPort: nc-${PORT}
+    targetPort: echo-${PORT}

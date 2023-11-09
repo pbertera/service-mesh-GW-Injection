@@ -11,7 +11,7 @@ DEMO_AUTO_TYPE=no
 DEMO_SPEED=0.01
 DEMO_CSIZE=4
 #DEMO_NOWAIT=no
-PROJECT=netcat
+PROJECT=echo-server
 
 ps1_bg_color=${c['bg_CYAN']}
 ps1_color=${c['ORANGE']}
@@ -45,43 +45,43 @@ function create_gateway(){
 function create_virtualservice(){
   pi "# We use a VirtualService link the app services to the Gateway"
   pi "# We want to create the VirtualService into the istio-system namespace"
-  vs_manifest=$(cat manifests/virtualservice.yaml)
+  vs_manifest=$(cat manifests/virtualservice.yaml | PROJECT=$PROJECT envsubst)
   p "cat << EOF | oc create -n istio-system -f -"
   echo "$vs_manifest"
   echo EOF
   echo "$vs_manifest" | oc create -n istio-system -f -
 }
 
-pi "# Let's create the '$PROJECT' project containing the applications"
-pe "oc new-project $PROJECT"
+#pi "# Let's create the '$PROJECT' project containing the applications"
+#pe "oc new-project $PROJECT"
 
-create_app 8081
-create_app 8082
-create_app 8083
+#create_app 8081
+#create_app 8082
+#create_app 8083
 
-pe "oc get pods,svc -n netcat"
+#pe "oc get pods,svc -n $PROJECT"
 
-pi "# We now need to expose the applications"
-pi "# Let's create the istio-system namespace and the Service Mesh Control Plane"; sleep 1
-pe "oc new-project istio-system"
-scm_manifest=$(cat manifests/smcp.yaml)
-pi 'cat << EOF | oc create -n istio-system -f -'
-echo "$scm_manifest"
-echo EOF
+#pi "# We now need to expose the applications"
+#pi "# Let's create the istio-system namespace and the Service Mesh Control Plane"; sleep 1
+#pe "oc new-project istio-system"
+#scm_manifest=$(cat manifests/smcp-cp.yaml)
+#pi 'cat << EOF | oc create -n istio-system -f -'
+#echo "$scm_manifest"
+#echo EOF
 
-oc create -f manifests/smcp.yaml
+#echo "$scm_manifest" | oc create -n istio-system -f -
 
-pi "# Check on the AWS console the new LB"
+#pi "# Check on the AWS console the new LB"
 
-pi "# Let's have a look at the 'istio-ingressgateway' service"
-pe "oc get svc -n istio-system istio-ingressgateway -o yaml"
+#pi "# Let's have a look at the 'istio-ingressgateway' service"
+#pe "oc get svc -n istio-system istio-ingressgateway -o yaml"
 
-pi "# Let's add the project '$PROJECT' to the mesh"
-smmr_manifest=$(cat manifests/servicemesh-memberroll.yaml | PROJECT=$PROJECT envsubst)
-pi 'cat << EOF | oc create -n istio-system -f -'
-echo "$smmr_manifest"
-echo EOF
-echo "$smmr_manifest" | oc create -n istio-system -f -
+#pi "# Let's add the project '$PROJECT' to the mesh"
+#smmr_manifest=$(cat manifests/servicemesh-memberroll-cp.yaml | PROJECT=$PROJECT envsubst)
+#pi 'cat << EOF | oc create -n istio-system -f -'
+#echo "$smmr_manifest"
+#echo EOF
+#echo "$smmr_manifest" | oc create -n istio-system -f -
 
 create_gateway
 create_virtualservice

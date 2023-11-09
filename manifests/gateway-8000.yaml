@@ -1,27 +1,26 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: gateway
+  name: gateway-8000
 spec:
   selector:
-    istio: ingressgateway # use istio default controller
+    istio: ingressgateway-8000 # use the ingressgateway-8000 gateway
   servers: # one server per each application
   - port:
       number: 8081
-      name: echo-8081
+      name: nc-8081
       protocol: TCP
     hosts:
     - "*"
   - port:
       number: 8082
-      name: echo-8082
+      name: nc-8082
       protocol: TCP
     hosts:
     - "*"
   - port:
       number: 8083
-      name: echo-8083
+      name: nc-8083
       protocol: TCP
     hosts:
     - "*"
-
