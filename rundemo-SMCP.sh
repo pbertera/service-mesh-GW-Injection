@@ -52,36 +52,36 @@ function create_virtualservice(){
   echo "$vs_manifest" | oc create -n istio-system -f -
 }
 
-#pi "# Let's create the '$PROJECT' project containing the applications"
-#pe "oc new-project $PROJECT"
+pi "# Let's create the '$PROJECT' project containing the applications"
+pe "oc new-project $PROJECT"
 
-#create_app 8081
-#create_app 8082
-#create_app 8083
+create_app 8081
+create_app 8082
+create_app 8083
 
-#pe "oc get pods,svc -n $PROJECT"
+pe "oc get pods,svc -n $PROJECT"
 
-#pi "# We now need to expose the applications"
-#pi "# Let's create the istio-system namespace and the Service Mesh Control Plane"; sleep 1
-#pe "oc new-project istio-system"
-#scm_manifest=$(cat manifests/smcp-cp.yaml)
-#pi 'cat << EOF | oc create -n istio-system -f -'
-#echo "$scm_manifest"
-#echo EOF
+pi "# We now need to expose the applications"
+pi "# Let's create the istio-system namespace and the Service Mesh Control Plane"; sleep 1
+pe "oc new-project istio-system"
+scm_manifest=$(cat manifests/smcp-cp.yaml)
+pi 'cat << EOF | oc create -n istio-system -f -'
+echo "$scm_manifest"
+echo EOF
 
-#echo "$scm_manifest" | oc create -n istio-system -f -
+echo "$scm_manifest" | oc create -n istio-system -f -
 
-#pi "# Check on the AWS console the new LB"
+pi "# Check on the AWS console the new LB"
 
-#pi "# Let's have a look at the 'istio-ingressgateway' service"
-#pe "oc get svc -n istio-system istio-ingressgateway -o yaml"
+pi "# Let's have a look at the 'istio-ingressgateway' service"
+pe "oc get svc -n istio-system istio-ingressgateway -o yaml"
 
-#pi "# Let's add the project '$PROJECT' to the mesh"
-#smmr_manifest=$(cat manifests/servicemesh-memberroll-cp.yaml | PROJECT=$PROJECT envsubst)
-#pi 'cat << EOF | oc create -n istio-system -f -'
-#echo "$smmr_manifest"
-#echo EOF
-#echo "$smmr_manifest" | oc create -n istio-system -f -
+pi "# Let's add the project '$PROJECT' to the mesh"
+smmr_manifest=$(cat manifests/servicemesh-memberroll-cp.yaml | PROJECT=$PROJECT envsubst)
+pi 'cat << EOF | oc create -n istio-system -f -'
+echo "$smmr_manifest"
+echo EOF
+echo "$smmr_manifest" | oc create -n istio-system -f -
 
 create_gateway
 create_virtualservice
