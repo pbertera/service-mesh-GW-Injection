@@ -35,6 +35,12 @@ Possibile solutions are:
 7. Into the `gateways` ns creates 2 `Deployment` where the Ingress gateway is injected, Deployments are exposed with a corresponding `LoadBalancer` service
 8. Creates the `Gateway` and the `VirtualService` resources to expose the internal services externally
 
+To cleanup the cluster just remove the projects:
+
+```
+$ oc delete project istio-system echo-server-8000 echo-server-9000 gateways
+```
+
 #### Control Plane Gateway
 
 - `rundemo-SMCP.sh` uses the Ingress Gateway of the control plane to expose some TCP ports

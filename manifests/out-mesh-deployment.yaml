@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: out-mesh
+  labels:
+    app: out-mesh
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: out-mesh
+  template:
+    metadata:
+      labels:
+        app: out-mesh
+    spec:
+      containers:
+      - name: main
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - "ALL"
+          runAsNonRoot: true
+          seccompProfile:
+            type: "RuntimeDefault"
+        image: quay.io/pbertera/net-tools
+        args:
+        - /bin/sh
+        - -c
+        - "sleep inf"
