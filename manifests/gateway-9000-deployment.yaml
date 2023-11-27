@@ -10,6 +10,9 @@ spec:
   selector:
     istio: ingressgateway-9000
   ports:
+  - name: status
+    port: 15021
+    targetPort: 15021
   - name: echo-9091
     port: 9091
     targetPort: 9091
@@ -58,6 +61,16 @@ spec:
           seccompProfile:
             type: "RuntimeDefault"
         image: auto
+        readinessProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /healthz/ready
+            port: 15021
+            scheme: HTTP
+          initialDelaySeconds: 1
+          periodSeconds: 2
+          successThreshold: 1
+          timeoutSeconds: 1
       topologySpreadConstraints:
       - labelSelector:
           matchExpressions:

@@ -67,36 +67,36 @@ function create_virtualservice(){
   echo "$vs_manifest" | oc create -n $GW_PROJECT -f -
 }
 
-#pi "# Let's create the '$PROJECT_8000' project containing the applications listening on ports 8081,8082 and 8083"
-#pe "oc new-project $PROJECT_8000"
+pi "# Let's create the '$PROJECT_8000' project containing the applications listening on ports 8081,8082 and 8083"
+pe "oc new-project $PROJECT_8000"
 
-#create_app 8081 $PROJECT_8000
-#create_app 8082 $PROJECT_8000
-#create_app 8083 $PROJECT_8000
+create_app 8081 $PROJECT_8000
+create_app 8082 $PROJECT_8000
+create_app 8083 $PROJECT_8000
 
-#pe "oc get pods,svc -n $PROJECT_8000"
+pe "oc get pods,svc -n $PROJECT_8000"
 
-#pi "# Let's create the '$PROJECT_9000' project containing the applications listening on ports 9091,9092 and 9093"
-#pe "oc new-project $PROJECT_9000"
+pi "# Let's create the '$PROJECT_9000' project containing the applications listening on ports 9091,9092 and 9093"
+pe "oc new-project $PROJECT_9000"
 
-#create_app 9091 $PROJECT_9000
-#create_app 9092 $PROJECT_9000
-#create_app 9093 $PROJECT_9000
+create_app 9091 $PROJECT_9000
+create_app 9092 $PROJECT_9000
+create_app 9093 $PROJECT_9000
 
-#pe "oc get pods,svc -n $PROJECT_9000"
+pe "oc get pods,svc -n $PROJECT_9000"
 
-#pi "# We now need to expose the applications"
-#pi "# Let's create the istio-system namespace and the Service Mesh Control Plane"; sleep 1
-#pe "oc new-project istio-system"
+pi "# We now need to expose the applications"
+pi "# Let's create the istio-system namespace and the Service Mesh Control Plane"; sleep 1
+pe "oc new-project istio-system"
 
-#scm_manifest=$(cat manifests/smcp.yaml)
-#pi 'cat << EOF | oc create -n istio-system -f -'
-#echo "$scm_manifest"
-#echo EOF
-#echo "$scm_manifest" | oc create -n istio-system -f -
+scm_manifest=$(cat manifests/smcp.yaml)
+pi 'cat << EOF | oc create -n istio-system -f -'
+echo "$scm_manifest"
+echo EOF
+echo "$scm_manifest" | oc create -n istio-system -f -
 
-#pi "# Let's create the '$GW_PROJECT' project containing the ingress gateways"
-#pe "oc new-project $GW_PROJECT"
+pi "# Let's create the '$GW_PROJECT' project containing the ingress gateways"
+pe "oc new-project $GW_PROJECT"
 
 pi "# Let's add the projects $PROJECT_8000,$PROJECT_9000 and $GW_PROJECT to the mesh"
 smmr_manifest=$(cat manifests/servicemesh-memberroll-deploy.yaml | PROJECT_8000=$PROJECT_8000 PROJECT_9000=$PROJECT_9000 GW_PROJECT=$GW_PROJECT envsubst)
